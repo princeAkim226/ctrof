@@ -1,178 +1,220 @@
 'use client';
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 
-const Home: React.FC = () => {
-  const [step, setStep] = useState(1);
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [route, setRoute] = useState('');
-  const [time, setTime] = useState('');
-  const [date, setDate] = useState('');
+const ReservationPage: React.FC = () => {
+  const [typeReservation, setTypeReservation] = useState<'National' | 'International' | null>(null);
+  const [tripType, setTripType] = useState<'AllerSimple' | 'AllerRetour' | null>(null);
+  const [formData, setFormData] = useState({
+    tel: '',
+    nom: '',
+    horaire: '',
+    trajetAller: '',
+    dateAller: '',
+    trajetRetour: '',
+    dateRetour: '',
+    message: '',
+  });
+  const [confirmationMessage, setConfirmationMessage] = useState<string | null>(null);
 
-  const handleNextStep = () => {
-    setStep((prev) => prev + 1);
+  const trajets = ['OUA-BBO', 'BBO-KMS', 'OUA-KDG']; // Liste des trajets disponibles
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData(prevData => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  const images = [
-    '/images/image1.jpg',
-    '/images/image2.jpg',
-    '/images/image3.jpg',
-    '/images/image4.jpg',
-    '/images/image5.jpg',
-  ];
-  const [currentImage, setCurrentImage] = useState(0);
-
-  const cycleImages = () => {
-    setCurrentImage((prev) => (prev + 1) % images.length);
+  const handlePhoneChange = (value: string) => {
+    setFormData(prevData => ({
+      ...prevData,
+      tel: value,
+    }));
   };
 
-  React.useEffect(() => {
-    const interval = setInterval(cycleImages, 3000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Obtenir la date d'aujourd'hui au format YYYY-MM-DD
-  const today = new Date().toISOString().split('T')[0];
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Form Data:", formData);
+    setConfirmationMessage("Votre réservation a été soumise avec succès !");
+  };
 
   return (
-    <div className="flex flex-col md:flex-row h-screen bg-gray-100">
-      {/* Form Section */}
-      <div className="flex flex-col justify-center items-center w-full md:w-1/2 p-8 bg-white shadow-lg">
-        <h1 className="text-2xl font-bold text-center mb-6">Réservation</h1>
+    <div className="min-h-screen bg-gray-100 p-4 flex flex-col items-center">
+      <h1 className="text-xl sm:text-2xl font-bold text-center mb-6 text-gray-800">Réservation</h1>
 
-        <motion.div
-          key={step}
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -50 }}
-          transition={{ duration: 0.5 }}
-          className="flex flex-col w-full max-w-md"
+      {/* Choix National ou International */}
+      <div className="flex flex-col sm:flex-row gap-4 mb-6 w-full sm:w-auto">
+        <button
+          onClick={() => setTypeReservation(typeReservation === 'National' ? null : 'National')}
+          className={`px-4 py-2 rounded-lg font-medium ${
+            typeReservation === 'National' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'
+          }`}
         >
-          {step === 1 && (
-            <div>
-              <label htmlFor="name" className="mb-2 text-gray-700">Quel est votre nom ?</label>
-              <input
-                type="text"
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="p-2 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
-              />
-              <button
-                onClick={handleNextStep}
-                className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition w-full"
-              >
-                Suivant
-              </button>
-            </div>
-          )}
-
-          {step === 2 && (
-            <div>
-              <p className="text-gray-700 mb-4">Bonjour {name}, quel est votre numéro de téléphone ?</p>
-              <label htmlFor="phone" className="mb-2 text-gray-700">Numéro de téléphone :</label>
-              <PhoneInput
-                country={'bf'}
-                value={phone}
-                onChange={(phone) => setPhone(phone)}
-                inputClass="w-full p-2 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                containerStyle={{ width: '100%' }}
-              />
-              <button
-                onClick={handleNextStep}
-                className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition w-full"
-              >
-                Suivant
-              </button>
-            </div>
-          )}
-
-          {step === 3 && (
-            <div>
-              <p className="text-gray-700 mb-4">Merci {name}. Pour quel trajet voulez-vous faire une réservation ?</p>
-              <label htmlFor="route" className="mb-2 text-gray-700">Trajet :</label>
-              <select
-                id="route"
-                value={route}
-                onChange={(e) => setRoute(e.target.value)}
-                className="p-2 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
-              >
-                <option value="" disabled>Choisissez un trajet</option>
-                <option value="Ouaga - Bobo">Ouaga - Bobo</option>
-                <option value="Ouaga - Boromo">Ouaga - Boromo</option>
-                <option value="Bobo - Koudougou">Bobo - Koudougou</option>
-                <option value="Koudougou - Ouaga">Koudougou - Ouaga</option>
-              </select>
-              <button
-                onClick={handleNextStep}
-                className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition w-full"
-              >
-                Suivant
-              </button>
-            </div>
-          )}
-
-          {step === 4 && (
-            <div>
-              <p className="text-gray-700 mb-4">À quelle heure partez-vous, {name} ?</p>
-              <label htmlFor="time" className="mb-2 text-gray-700">Heure :</label>
-              <input
-                type="time"
-                id="time"
-                value={time}
-                onChange={(e) => setTime(e.target.value)}
-                className="p-2 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
-              />
-              <button
-                onClick={handleNextStep}
-                className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition w-full"
-              >
-                Suivant
-              </button>
-            </div>
-          )}
-
-          {step === 5 && (
-            <div>
-              <p className="text-gray-700 mb-4">Et enfin, quelle est la date de votre voyage, {name} ?</p>
-              <label htmlFor="date" className="mb-2 text-gray-700">Date :</label>
-              <input
-                type="date"
-                id="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                min={today} // Limite la sélection de date aux jours futurs
-                className="p-2 border rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
-              />
-              <button
-                onClick={() => alert(`Réservation effectuée pour ${name}!`)}
-                className="bg-green-500 text-white p-2 rounded-lg hover:bg-green-600 transition w-full"
-              >
-                Réserver
-              </button>
-            </div>
-          )}
-        </motion.div>
+          National
+        </button>
+        <button
+          onClick={() => setTypeReservation(typeReservation === 'International' ? null : 'International')}
+          className={`px-4 py-2 rounded-lg font-medium ${
+            typeReservation === 'International' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'
+          }`}
+        >
+          International
+        </button>
       </div>
 
-      {/* Image Carousel Section */}
-      <div className="w-full md:w-1/2 flex justify-center items-center p-8 bg-gray-200">
-        <motion.img
-          key={currentImage}
-          src={images[currentImage]}
-          alt="Carousel"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.8 }}
-          className="rounded-lg shadow-lg max-h-full object-cover w-full md:w-auto"
-        />
-      </div>
+      {/* Choix Aller Simple ou Aller-Retour */}
+      {typeReservation && (
+        <div className="flex flex-col sm:flex-row gap-4 mb-6 w-full sm:w-auto">
+          <button
+            onClick={() => setTripType(tripType === 'AllerSimple' ? null : 'AllerSimple')}
+            className={`px-4 py-2 rounded-lg font-medium ${
+              tripType === 'AllerSimple' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'
+            }`}
+          >
+            Aller Simple
+          </button>
+          <button
+            onClick={() => setTripType(tripType === 'AllerRetour' ? null : 'AllerRetour')}
+            className={`px-4 py-2 rounded-lg font-medium ${
+              tripType === 'AllerRetour' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'
+            }`}
+          >
+            Aller-Retour
+          </button>
+        </div>
+      )}
+
+      {/* Formulaire */}
+      {typeReservation && tripType && (
+        <form onSubmit={handleSubmit} className="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full max-w-sm sm:max-w-md">
+          <div className="mb-4">
+            <label className="block text-gray-700 font-medium mb-2">Téléphone:</label>
+            <PhoneInput
+              country={'fr'}
+              value={formData.tel}
+              onChange={handlePhoneChange}
+              inputClass="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+              dropdownClass="bg-white border border-gray-300"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-gray-700 font-medium mb-2">Nom complet:</label>
+            <input
+              type="text"
+              name="nom"
+              value={formData.nom}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-gray-700 font-medium mb-2">Horaire:</label>
+            <select
+              name="horaire"
+              value={formData.horaire}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+            >
+              <option value="">Sélectionnez</option>
+              <option value="6H15">6H15</option>
+              <option value="7H15">7H15</option>
+            </select>
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-gray-700 font-medium mb-2">Trajet Aller:</label>
+            <select
+              name="trajetAller"
+              value={formData.trajetAller}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+            >
+              <option value="">Sélectionnez un trajet</option>
+              {trajets.map(trajet => (
+                <option key={trajet} value={trajet}>{trajet}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-gray-700 font-medium mb-2">Date Aller:</label>
+            <input
+              type="date"
+              name="dateAller"
+              value={formData.dateAller}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+            />
+          </div>
+
+          {/* Champs spécifiques pour Aller-Retour */}
+          {tripType === 'AllerRetour' && (
+            <>
+              <div className="mb-4">
+                <label className="block text-gray-700 font-medium mb-2">Trajet Retour:</label>
+                <select
+                  name="trajetRetour"
+                  value={formData.trajetRetour}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                >
+                  <option value="">Sélectionnez un trajet</option>
+                  {trajets.map(trajet => (
+                    <option key={trajet} value={trajet}>{trajet}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-gray-700 font-medium mb-2">Date Retour:</label>
+                <input
+                  type="date"
+                  name="dateRetour"
+                  value={formData.dateRetour}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                />
+              </div>
+            </>
+          )}
+
+          {/* Champ pour le message */}
+          <div className="mb-4">
+            <label className="block text-gray-700 font-medium mb-2">Message:</label>
+            <textarea
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+              rows={3}
+              placeholder="Entrez votre message ici..."
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white py-2 rounded-lg font-medium hover:bg-blue-600 transition duration-300"
+          >
+            Réserver
+          </button>
+        </form>
+      )}
+
+      {/* Message de confirmation */}
+      {confirmationMessage && (
+        <div className="mt-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
+          {confirmationMessage}
+        </div>
+      )}
     </div>
   );
 };
 
-export default Home;
+export default ReservationPage;
