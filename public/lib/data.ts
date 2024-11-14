@@ -1,0 +1,283 @@
+// data.ts
+
+interface Trajet {
+    destination: string;
+    horaires: string[];
+    tarifAllerSimple: number | null;
+    tarifAllerRetour: number | null;
+    type: "national" | "international";
+  }
+  
+  const trajets: Trajet[] = [
+    // Trajets nationaux
+    {
+      destination: "BOBO/OUAGA",
+      horaires: ["6H15", "8H00", "9H15", "10H15", "12H15", "15H15", "18H15", "22H15"],
+      tarifAllerSimple: 7000,
+      tarifAllerRetour: 13000,
+      type: "national",
+    },
+    {
+      destination: "BOBO/HOUNDE",
+      horaires: [],
+      tarifAllerSimple: 2000,
+      tarifAllerRetour: 4000,
+      type: "national",
+    },
+    {
+      destination: "BOBO/WAHABOU",
+      horaires: [],
+      tarifAllerSimple: 3000,
+      tarifAllerRetour: 8000,
+      type: "national",
+    },
+    {
+      destination: "BOBO/BOROMO",
+      horaires: [],
+      tarifAllerSimple: 3500,
+      tarifAllerRetour: 7000,
+      type: "national",
+    },
+    {
+      destination: "BOBO/POURRA-CARREFOUR",
+      horaires: [],
+      tarifAllerSimple: 4000,
+      tarifAllerRetour: null,
+      type: "national",
+    },
+    {
+      destination: "BOBO/TITA-LABA",
+      horaires: [],
+      tarifAllerSimple: 4000,
+      tarifAllerRetour: null,
+      type: "national",
+    },
+    {
+      destination: "BOBO/SABOU",
+      horaires: [],
+      tarifAllerSimple: 5000,
+      tarifAllerRetour: 10000,
+      type: "national",
+    },
+    {
+      destination: "BOBO/KOKOLOGO",
+      horaires: [],
+      tarifAllerSimple: 6000,
+      tarifAllerRetour: 12000,
+      type: "national",
+    },
+    {
+      destination: "BOBO/BANFORA",
+      horaires: [],
+      tarifAllerSimple: 2000,
+      tarifAllerRetour: 4000,
+      type: "national",
+    },
+    {
+      destination: "BOBO/PA",
+      horaires: [],
+      tarifAllerSimple: 2500,
+      tarifAllerRetour: 5000,
+      type: "national",
+    },
+    {
+      destination: "BOBO/NIANGOLOKO",
+      horaires: [],
+      tarifAllerSimple: 2500,
+      tarifAllerRetour: 5000,
+      type: "national",
+    },
+    {
+      destination: "OUGA/BOBO",
+      horaires: ["6H30", "9H30", "12H30", "13H30", "18H30", "22H00"],
+      tarifAllerSimple: 7000,
+      tarifAllerRetour: 13000,
+      type: "national",
+    },
+    {
+      destination: "OUGA/HOUNDE",
+      horaires: [],
+      tarifAllerSimple: 5000,
+      tarifAllerRetour: null,
+      type: "national",
+    },
+    {
+      destination: "OUGA/WAHABOU",
+      horaires: [],
+      tarifAllerSimple: null,
+      tarifAllerRetour: null,
+      type: "national",
+    },
+    {
+      destination: "OUGA/BOROMO",
+      horaires: [],
+      tarifAllerSimple: 3500,
+      tarifAllerRetour: null,
+      type: "national",
+    },
+    {
+      destination: "OUGA/POURRA-CARREFOUR",
+      horaires: [],
+      tarifAllerSimple: 3000,
+      tarifAllerRetour: null,
+      type: "national",
+    },
+    {
+      destination: "OUGA/TITA-LABA",
+      horaires: [],
+      tarifAllerSimple: 2500,
+      tarifAllerRetour: null,
+      type: "national",
+    },
+    {
+      destination: "OUGA/SABOU",
+      horaires: [],
+      tarifAllerSimple: 2000,
+      tarifAllerRetour: null,
+      type: "national",
+    },
+    // Trajets internationaux
+    {
+      destination: "BOB/ABIDJAN",
+      horaires: ["2H00", "5H30", "15H30"],
+      tarifAllerSimple: 25000,
+      tarifAllerRetour: null,
+      type: "international",
+    },
+    {
+      destination: "BOB/YAMOUSSOKRO",
+      horaires: [],
+      tarifAllerSimple: 22000,
+      tarifAllerRetour: null,
+      type: "international",
+    },
+    {
+      destination: "BOB/BOUAKE",
+      horaires: [],
+      tarifAllerSimple: 14000,
+      tarifAllerRetour: null,
+      type: "international",
+    },
+    {
+      destination: "BOB/OUANGOLO",
+      horaires: [],
+      tarifAllerSimple: 6000,
+      tarifAllerRetour: null,
+      type: "international",
+    },
+    {
+      destination: "BOB/FERKE",
+      horaires: [],
+      tarifAllerSimple: 7000,
+      tarifAllerRetour: null,
+      type: "international",
+    },
+    {
+      destination: "BOB/KORHOGO",
+      horaires: [],
+      tarifAllerSimple: 8000,
+      tarifAllerRetour: null,
+      type: "international",
+    },
+    {
+      destination: "BOB/TAFERE",
+      horaires: [],
+      tarifAllerSimple: 10000,
+      tarifAllerRetour: null,
+      type: "international",
+    },
+    {
+      destination: "BOB/NIANKARA",
+      horaires: [],
+      tarifAllerSimple: 12000,
+      tarifAllerRetour: null,
+      type: "international",
+    },
+    {
+      destination: "BOB/KATIOULA",
+      horaires: [],
+      tarifAllerSimple: 13000,
+      tarifAllerRetour: null,
+      type: "international",
+    },
+    {
+      destination: "BOB/LAKOTA",
+      horaires: [],
+      tarifAllerSimple: 25000,
+      tarifAllerRetour: null,
+      type: "international",
+    },
+    {
+      destination: "ABIDJAN/BOBO",
+      horaires: [],
+      tarifAllerSimple: 25000,
+      tarifAllerRetour: null,
+      type: "international",
+    },
+    {
+      destination: "YAMOUSSOKRO/BOBO",
+      horaires: [],
+      tarifAllerSimple: 22000,
+      tarifAllerRetour: null,
+      type: "international",
+    },
+    {
+      destination: "BOUAKE/BOBO",
+      horaires: [],
+      tarifAllerSimple: 14000,
+      tarifAllerRetour: null,
+      type: "international",
+    },
+    {
+      destination: "OUANGOLO/BOBO",
+      horaires: [],
+      tarifAllerSimple: 6000,
+      tarifAllerRetour: null,
+      type: "international",
+    },
+    {
+      destination: "FERKE/BOBO",
+      horaires: [],
+      tarifAllerSimple: 7000,
+      tarifAllerRetour: null,
+      type: "international",
+    },
+    {
+      destination: "KORHOGO/BOBO",
+      horaires: [],
+      tarifAllerSimple: 8000,
+      tarifAllerRetour: null,
+      type: "international",
+    },
+    {
+      destination: "TAFERE/BOBO",
+      horaires: [],
+      tarifAllerSimple: 10000,
+      tarifAllerRetour: null,
+      type: "international",
+    },
+    {
+      destination: "NIANKARA/BOBO",
+      horaires: [],
+      tarifAllerSimple: 12000,
+      tarifAllerRetour: null,
+      type: "international",
+    },
+    {
+      destination: "KATIOULA/BOBO",
+      horaires: [],
+      tarifAllerSimple: 13000,
+      tarifAllerRetour: null,
+      type: "international",
+    },
+    {
+      destination: "LAKOTA/BOBO",
+      horaires: [],
+      tarifAllerSimple: 25000,
+      tarifAllerRetour: null,
+      type: "international",
+    },
+  ];
+  
+  export default trajets;
+  

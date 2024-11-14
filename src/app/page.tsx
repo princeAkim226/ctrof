@@ -1,218 +1,183 @@
-'use client';
+"use client";
 import React, { useState } from 'react';
-import PhoneInput from 'react-phone-input-2';
-import 'react-phone-input-2/lib/style.css';
+import trajets from '../../public/lib/data';
 
 const ReservationPage: React.FC = () => {
-  const [typeReservation, setTypeReservation] = useState<'National' | 'International' | null>(null);
-  const [tripType, setTripType] = useState<'AllerSimple' | 'AllerRetour' | null>(null);
-  const [formData, setFormData] = useState({
-    tel: '',
-    nom: '',
-    horaire: '',
-    trajetAller: '',
-    dateAller: '',
-    trajetRetour: '',
-    dateRetour: '',
-    message: '',
-  });
-  const [confirmationMessage, setConfirmationMessage] = useState<string | null>(null);
+  const [typeTrajet, setTypeTrajet] = useState<"national" | "international" | "">("");
+  const [allerRetour, setAllerRetour] = useState<"allerSimple" | "allerRetour" | "">("");
+  const [numeroTel, setNumeroTel] = useState("");
+  const [horaire, setHoraire] = useState("");
+  const [selectedTrajet, setSelectedTrajet] = useState<string>("");
+  const [date, setDate] = useState("");
+  const [message, setMessage] = useState("");
+  const [price, setPrice] = useState<number | null>(null);
 
-  const trajets = ['OUA-BBO', 'BBO-KMS', 'OUA-KDG']; // Liste des trajets disponibles
+  const filteredTrajets = trajets.filter(trajet => trajet.type === typeTrajet);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData(prevData => ({
-      ...prevData,
-      [name]: value,
-    }));
+  const updatePrice = (trajet: any, type: "allerSimple" | "allerRetour") => {
+    const selectedPrice = type === "allerSimple" ? trajet.tarifAllerSimple : trajet.tarifAllerRetour;
+    setPrice(selectedPrice);
   };
 
-  const handlePhoneChange = (value: string) => {
-    setFormData(prevData => ({
-      ...prevData,
-      tel: value,
-    }));
+  const handleTypeTrajetChange = (value: "national" | "international") => {
+    setTypeTrajet(value);
+    setSelectedTrajet("");
+    setHoraire("");
+    setPrice(null);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Form Data:", formData);
-    setConfirmationMessage("Votre réservation a été soumise avec succès !");
+  const handleAllerRetourChange = (value: "allerSimple" | "allerRetour") => {
+    setAllerRetour(value);
+    const selectedTrajetData = filteredTrajets.find(trajet => trajet.destination === selectedTrajet);
+    if (selectedTrajetData) {
+      updatePrice(selectedTrajetData, value);
+    }
+  };
+
+  const handleTrajetChange = (value: string) => {
+    setSelectedTrajet(value);
+    setHoraire("");
+    const selectedTrajetData = filteredTrajets.find(trajet => trajet.destination === value);
+    if (selectedTrajetData && allerRetour) {
+      updatePrice(selectedTrajetData, allerRetour);
+    }
+  };
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    console.log({
+      typeTrajet,
+      allerRetour,
+      numeroTel,
+      horaire,
+      selectedTrajet,
+      date,
+      message,
+      price,
+    });
+    alert("Réservation effectuée !");
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 flex flex-col items-center">
-      <h1 className="text-xl sm:text-2xl font-bold text-center mb-6 text-gray-800">Réservation</h1>
+    <div className="p-6 max-w-lg mx-auto bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-lg shadow-xl">
+      <h1 className="text-3xl font-semibold text-center mb-6 text-white drop-shadow-lg">Réservez votre trajet</h1>
+      <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg shadow-md">
 
-      {/* Choix National ou International */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-6 w-full sm:w-auto">
-        <button
-          onClick={() => setTypeReservation(typeReservation === 'National' ? null : 'National')}
-          className={`px-4 py-2 rounded-lg font-medium ${
-            typeReservation === 'National' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'
-          }`}
-        >
-          National
-        </button>
-        <button
-          onClick={() => setTypeReservation(typeReservation === 'International' ? null : 'International')}
-          className={`px-4 py-2 rounded-lg font-medium ${
-            typeReservation === 'International' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'
-          }`}
-        >
-          International
-        </button>
-      </div>
-
-      {/* Choix Aller Simple ou Aller-Retour */}
-      {typeReservation && (
-        <div className="flex flex-col sm:flex-row gap-4 mb-6 w-full sm:w-auto">
-          <button
-            onClick={() => setTripType(tripType === 'AllerSimple' ? null : 'AllerSimple')}
-            className={`px-4 py-2 rounded-lg font-medium ${
-              tripType === 'AllerSimple' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'
-            }`}
+        {/* Type de trajet */}
+        <div className="mb-4">
+          <label className="block text-gray-800 font-medium mb-2">Type de trajet :</label>
+          <select
+            value={typeTrajet}
+            onChange={(e) => handleTypeTrajetChange(e.target.value as "national" | "international")}
+            className="w-full px-4 py-3 border rounded-md text-gray-700 focus:outline-none focus:ring focus:border-blue-300 transition duration-300"
           >
-            Aller Simple
-          </button>
-          <button
-            onClick={() => setTripType(tripType === 'AllerRetour' ? null : 'AllerRetour')}
-            className={`px-4 py-2 rounded-lg font-medium ${
-              tripType === 'AllerRetour' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'
-            }`}
-          >
-            Aller-Retour
-          </button>
+            <option value="">Sélectionner</option>
+            <option value="national">National</option>
+            <option value="international">International</option>
+          </select>
         </div>
-      )}
 
-      {/* Formulaire */}
-      {typeReservation && tripType && (
-        <form onSubmit={handleSubmit} className="bg-white p-4 sm:p-6 rounded-lg shadow-md w-full max-w-sm sm:max-w-md">
-          <div className="mb-4">
-            <label className="block text-gray-700 font-medium mb-2">Téléphone:</label>
-            <PhoneInput
-              country={'fr'}
-              value={formData.tel}
-              onChange={handlePhoneChange}
-              inputClass="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-              dropdownClass="bg-white border border-gray-300"
-            />
-          </div>
+        {/* Aller simple ou aller-retour */}
+        <div className="mb-4">
+          <label className="block text-gray-800 font-medium mb-2">Aller simple ou retour :</label>
+          <select
+            value={allerRetour}
+            onChange={(e) => handleAllerRetourChange(e.target.value as "allerSimple" | "allerRetour")}
+            className="w-full px-4 py-3 border rounded-md text-gray-700 focus:outline-none focus:ring focus:border-blue-300 transition duration-300"
+            disabled={!typeTrajet}
+          >
+            <option value="">Sélectionner</option>
+            <option value="allerSimple">Aller simple</option>
+            <option value="allerRetour">Aller-retour</option>
+          </select>
+        </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700 font-medium mb-2">Nom complet:</label>
-            <input
-              type="text"
-              name="nom"
-              value={formData.nom}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-            />
-          </div>
+        {/* Sélection du trajet */}
+        <div className="mb-4">
+          <label className="block text-gray-800 font-medium mb-2">Sélectionner un trajet :</label>
+          <select
+            value={selectedTrajet}
+            onChange={(e) => handleTrajetChange(e.target.value)}
+            className="w-full px-4 py-3 border rounded-md text-gray-700 focus:outline-none focus:ring focus:border-blue-300 transition duration-300"
+            disabled={!allerRetour}
+          >
+            <option value="">Sélectionner</option>
+            {filteredTrajets.map((trajet, index) => (
+              <option key={index} value={trajet.destination}>
+                {trajet.destination}
+              </option>
+            ))}
+          </select>
+        </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700 font-medium mb-2">Horaire:</label>
-            <select
-              name="horaire"
-              value={formData.horaire}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-            >
-              <option value="">Sélectionnez</option>
-              <option value="6H15">6H15</option>
-              <option value="7H15">7H15</option>
-            </select>
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-gray-700 font-medium mb-2">Trajet Aller:</label>
-            <select
-              name="trajetAller"
-              value={formData.trajetAller}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-            >
-              <option value="">Sélectionnez un trajet</option>
-              {trajets.map(trajet => (
-                <option key={trajet} value={trajet}>{trajet}</option>
+        {/* Horaire */}
+        <div className="mb-4">
+          <label className="block text-gray-800 font-medium mb-2">Sélectionner un horaire :</label>
+          <select
+            value={horaire}
+            onChange={(e) => setHoraire(e.target.value)}
+            className="w-full px-4 py-3 border rounded-md text-gray-700 focus:outline-none focus:ring focus:border-blue-300 transition duration-300"
+            disabled={!selectedTrajet}
+          >
+            <option value="">Sélectionner</option>
+            {filteredTrajets
+              .find((trajet) => trajet.destination === selectedTrajet)
+              ?.horaires.map((horaire, index) => (
+                <option key={index} value={horaire}>
+                  {horaire}
+                </option>
               ))}
-            </select>
-          </div>
+          </select>
+        </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700 font-medium mb-2">Date Aller:</label>
-            <input
-              type="date"
-              name="dateAller"
-              value={formData.dateAller}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-            />
-          </div>
+        {/* Informations supplémentaires */}
+        <div className="mb-4">
+          <label className="block text-gray-800 font-medium mb-2">Numéro de téléphone :</label>
+          <input
+            type="text"
+            value={numeroTel}
+            onChange={(e) => setNumeroTel(e.target.value)}
+            className="w-full px-4 py-3 border rounded-md text-gray-700 focus:outline-none focus:ring focus:border-blue-300 transition duration-300"
+          />
+        </div>
 
-          {/* Champs spécifiques pour Aller-Retour */}
-          {tripType === 'AllerRetour' && (
-            <>
-              <div className="mb-4">
-                <label className="block text-gray-700 font-medium mb-2">Trajet Retour:</label>
-                <select
-                  name="trajetRetour"
-                  value={formData.trajetRetour}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                >
-                  <option value="">Sélectionnez un trajet</option>
-                  {trajets.map(trajet => (
-                    <option key={trajet} value={trajet}>{trajet}</option>
-                  ))}
-                </select>
-              </div>
+        <div className="mb-4">
+          <label className="block text-gray-800 font-medium mb-2">Date de départ :</label>
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            className="w-full px-4 py-3 border rounded-md text-gray-700 focus:outline-none focus:ring focus:border-blue-300 transition duration-300"
+          />
+        </div>
 
-              <div className="mb-4">
-                <label className="block text-gray-700 font-medium mb-2">Date Retour:</label>
-                <input
-                  type="date"
-                  name="dateRetour"
-                  value={formData.dateRetour}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                />
-              </div>
-            </>
-          )}
+        <div className="mb-6">
+          <label className="block text-gray-800 font-medium mb-2">Message (optionnel) :</label>
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            className="w-full px-4 py-3 border rounded-md text-gray-700 focus:outline-none focus:ring focus:border-blue-300 transition duration-300"
+          />
+        </div>
 
-          {/* Champ pour le message */}
-          <div className="mb-4">
-            <label className="block text-gray-700 font-medium mb-2">Message:</label>
-            <textarea
-              name="message"
-              value={formData.message}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-              rows={3}
-              placeholder="Entrez votre message ici..."
-            />
-          </div>
+        {/* Affichage du prix */}
+        <div className="mb-6 flex justify-center items-center">
+          <label className="text-gray-800 font-medium mr-4">Prix :</label>
+          <p className="text-xl font-semibold text-gray-800">
+            {price ? `${price} FCFA` : "Sélectionnez un trajet et un type de billet"}
+          </p>
+        </div>
 
+        {/* Bouton de réservation */}
+        <div className="flex justify-center">
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded-lg font-medium hover:bg-blue-600 transition duration-300"
+            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300"
           >
             Réserver
           </button>
-        </form>
-      )}
-
-      {/* Message de confirmation */}
-      {confirmationMessage && (
-        <div className="mt-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
-          {confirmationMessage}
         </div>
-      )}
+      </form>
     </div>
   );
 };
