@@ -1,6 +1,15 @@
+// ReservationPage.tsx
 "use client";
-import React, { useState } from 'react';
-import trajets from '../../public/lib/data';
+import React, { useState } from "react";
+import trajets from "../../public/lib/data";
+
+interface Trajet {
+  destination: string;
+  horaires: string[];
+  tarifAllerSimple: number | null;
+  tarifAllerRetour: number | null;
+  type: "national" | "international";
+}
 
 const ReservationPage: React.FC = () => {
   const [typeTrajet, setTypeTrajet] = useState<"national" | "international" | "">("");
@@ -12,9 +21,9 @@ const ReservationPage: React.FC = () => {
   const [message, setMessage] = useState("");
   const [price, setPrice] = useState<number | null>(null);
 
-  const filteredTrajets = trajets.filter(trajet => trajet.type === typeTrajet);
+  const filteredTrajets = trajets.filter((trajet: Trajet) => trajet.type === typeTrajet);
 
-  const updatePrice = (trajet: any, type: "allerSimple" | "allerRetour") => {
+  const updatePrice = (trajet: Trajet, type: "allerSimple" | "allerRetour") => {
     const selectedPrice = type === "allerSimple" ? trajet.tarifAllerSimple : trajet.tarifAllerRetour;
     setPrice(selectedPrice);
   };
@@ -28,7 +37,7 @@ const ReservationPage: React.FC = () => {
 
   const handleAllerRetourChange = (value: "allerSimple" | "allerRetour") => {
     setAllerRetour(value);
-    const selectedTrajetData = filteredTrajets.find(trajet => trajet.destination === selectedTrajet);
+    const selectedTrajetData = filteredTrajets.find((trajet) => trajet.destination === selectedTrajet);
     if (selectedTrajetData) {
       updatePrice(selectedTrajetData, value);
     }
@@ -37,7 +46,7 @@ const ReservationPage: React.FC = () => {
   const handleTrajetChange = (value: string) => {
     setSelectedTrajet(value);
     setHoraire("");
-    const selectedTrajetData = filteredTrajets.find(trajet => trajet.destination === value);
+    const selectedTrajetData = filteredTrajets.find((trajet) => trajet.destination === value);
     if (selectedTrajetData && allerRetour) {
       updatePrice(selectedTrajetData, allerRetour);
     }
