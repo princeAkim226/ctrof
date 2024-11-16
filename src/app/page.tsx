@@ -21,8 +21,8 @@ const ReservationPage: React.FC = () => {
   const [message, setMessage] = useState("");
   const [price, setPrice] = useState<number | null>(null);
   const [nomPrenoms, setNomPrenoms] = useState("");
-  const [showModal, setShowModal] = useState(false); // Etat pour contrôler l'affichage du modal
   const [showConfirmationModal, setShowConfirmationModal] = useState(false); // Nouveau modal pour la confirmation
+  const [showContactModal, setShowContactModal] = useState(false); // Modal pour contact ou dépôt
 
   // Filtrage des trajets en fonction du type sélectionné
   const filteredTrajets = trajets.filter((trajet: Trajet) => trajet.type === typeTrajet);
@@ -52,7 +52,7 @@ const ReservationPage: React.FC = () => {
 
   const handleSubmit = () => {
     // Afficher le modal de confirmation
-    setShowConfirmationModal(true);
+    setShowContactModal(true); // Affiche le modal de contact/dépôt
   };
 
   const steps = [
@@ -142,6 +142,21 @@ const ReservationPage: React.FC = () => {
       ),
     },
     {
+      label: "Sélectionner la date",
+      content: (
+        <div>
+          <label className="block text-gray-800 font-medium mb-2">Sélectionner la date :</label>
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            className="w-full px-4 py-3 border rounded-md"
+            disabled={!horaire}
+          />
+        </div>
+      ),
+    },
+    {
       label: "Informations personnelles",
       content: (
         <div>
@@ -158,6 +173,20 @@ const ReservationPage: React.FC = () => {
             value={numeroTel}
             onChange={(e) => setNumeroTel(e.target.value)}
             className="w-full px-4 py-3 border rounded-md"
+          />
+        </div>
+      ),
+    },
+    {
+      label: "Message",
+      content: (
+        <div>
+          <label className="block text-gray-800 font-medium mb-2">Message :</label>
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            className="w-full px-4 py-3 border rounded-md"
+            rows={3}
           />
         </div>
       ),
@@ -192,50 +221,62 @@ const ReservationPage: React.FC = () => {
 
   return (
     <div className="p-6 max-w-lg mx-auto bg-white rounded-lg shadow-xl">
-      <h1 className="text-2xl font-semibold text-center mb-6">Réservez votre trajet</h1>
+      <h1 className="text-2xl font-bold text-center mb-6">Réservation de Trajet</h1>
 
-      {/* Image Carrousel */}
-      <div className="mb-6">
+      <div className="flex justify-center mb-6">
         <div className="relative">
           <img
             src={images[currentImageIndex]}
-            alt={`Trajet ${currentImageIndex + 1}`}
-            className="w-full h-60 object-cover rounded-md"
+            alt="Carrousel Image"
+            className="w-full h-auto rounded-lg"
           />
+          <div className="absolute top-0 left-0 right-0 bottom-0 bg-black opacity-30"></div>
         </div>
       </div>
 
-      {/* Form Content */}
-      <div>{steps[step].content}</div>
+      <div>
+        <h2 className="text-xl font-semibold mb-4">{steps[step].label}</h2>
+        {steps[step].content}
+      </div>
 
-      {/* Navigation Buttons */}
       <div className="flex justify-between mt-6">
-        {step > 0 && (
-          <button onClick={handleBack} className="py-2 px-4 bg-gray-300 rounded-md">
-            Retour
-          </button>
-        )}
+        <button
+          className="px-6 py-2 bg-gray-300 rounded-md text-gray-800"
+          onClick={handleBack}
+          disabled={step === 0}
+        >
+          Retour
+        </button>
         {step < steps.length - 1 ? (
-          <button onClick={handleNext} className="py-2 px-4 bg-blue-500 text-white rounded-md">
+          <button
+            className="px-6 py-2 bg-blue-600 rounded-md text-white"
+            onClick={handleNext}
+          >
             Suivant
           </button>
         ) : (
-          <button onClick={handleSubmit} className="py-2 px-4 bg-green-500 text-white rounded-md">
+          <button
+            className="px-6 py-2 bg-green-600 rounded-md text-white"
+            onClick={handleSubmit}
+          >
             Réserver
           </button>
         )}
       </div>
 
-      {/* Modal */}
-      {showConfirmationModal && (
-        <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-6 rounded-md w-80">
-            <h2 className="text-lg font-semibold">Confirmation de Réservation</h2>
-            <p>Pour finaliser votre réservation, veuillez contacter le numéro suivant pour confirmation ou effectuer un dépôt :</p>
-            <p className="font-bold">+226 123 456 789</p>
-            <button onClick={() => setShowConfirmationModal(false)} className="mt-4 py-2 px-4 bg-blue-500 text-white rounded-md">
-              Fermer
-            </button>
+      {showContactModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-md shadow-lg max-w-lg w-full">
+            <h3 className="text-lg font-bold mb-4">Confirmation de la réservation</h3>
+            <p>Pour confirmer votre réservation, veuillez contacter le 77 00 00 00 ou effectuer un dépôt au 77 00 00 00.</p>
+            <div className="mt-4">
+              <button
+                className="px-6 py-2 bg-gray-300 rounded-md mr-4"
+                onClick={() => setShowContactModal(false)}
+              >
+                Fermer
+              </button>
+            </div>
           </div>
         </div>
       )}
