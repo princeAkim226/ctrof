@@ -41,10 +41,6 @@ const ReservationPage: React.FC = () => {
   ];
 
   // Mise à jour du prix en fonction du trajet et du type (aller simple ou aller-retour)
-  const updatePrice = (trajet: Trajet, type: "allerSimple" | "allerRetour") => {
-    const selectedPrice = type === "allerSimple" ? trajet.tarifAllerSimple : trajet.tarifAllerRetour;
-    setPrice(selectedPrice);
-  };
 
   const handleNext = () => setStep((prev) => Math.min(prev + 1, steps.length - 1));
   const handleBack = () => setStep((prev) => Math.max(prev - 1, 0));
