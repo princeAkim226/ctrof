@@ -19,7 +19,6 @@ const ReservationPage: React.FC = () => {
   const [selectedTrajet, setSelectedTrajet] = useState<string>(""); 
   const [date, setDate] = useState("");
   const [message, setMessage] = useState("");
-  const [price, setPrice] = useState<number | null>(null);
   const [nomPrenoms, setNomPrenoms] = useState("");
   const [showContactModal, setShowContactModal] = useState(false); // Modal pour contact ou dépôt
 
@@ -192,11 +191,8 @@ const ReservationPage: React.FC = () => {
         <div className="text-center">
           <p className="text-gray-800">Nom : {nomPrenoms}</p>
           <p className="text-gray-800">Trajet : {selectedTrajet}</p>
-          {price !== null ? (
-            <p className="text-gray-800">Prix : {price} FCFA</p>
-          ) : (
-            <p className="text-gray-800">Prix non disponible</p>
-          )}
+        
+         
         </div>
       ),
     },
