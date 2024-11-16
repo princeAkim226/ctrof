@@ -1,11 +1,10 @@
-// ReservationPage.tsx
 "use client";
 import React, { useState } from "react";
 import trajets from "../../public/lib/data";
 
 interface Trajet {
   destination: string;
-  horaires: string[];
+  horaires: string[]; // Liste des horaires possibles
   tarifAllerSimple: number | null;
   tarifAllerRetour: number | null;
   type: "national" | "international";
@@ -20,8 +19,12 @@ const ReservationPage: React.FC = () => {
   const [date, setDate] = useState("");
   const [message, setMessage] = useState("");
   const [price, setPrice] = useState<number | null>(null);
+  const [nomPrenoms, setNomPrenoms] = useState("");
 
   const filteredTrajets = trajets.filter((trajet: Trajet) => trajet.type === typeTrajet);
+
+  // Horaires fixes pour les trajets internationaux
+  const horairesInternationaux = ["2h00", "05h30", "15h30"];
 
   const updatePrice = (trajet: Trajet, type: "allerSimple" | "allerRetour") => {
     const selectedPrice = type === "allerSimple" ? trajet.tarifAllerSimple : trajet.tarifAllerRetour;
@@ -63,6 +66,7 @@ const ReservationPage: React.FC = () => {
       date,
       message,
       price,
+      nomPrenoms
     });
     alert("Réservation effectuée !");
   };
@@ -70,6 +74,12 @@ const ReservationPage: React.FC = () => {
   return (
     <div className="p-6 max-w-lg mx-auto bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-lg shadow-xl">
       <h1 className="text-3xl font-semibold text-center mb-6 text-white drop-shadow-lg">Réservez votre trajet</h1>
+
+      {/* Image d'illustration en haut */}
+      <div className="mb-6 text-center">
+        <img src="/images/image1.jpg" alt="Illustration Réservation" className="w-32 mx-auto rounded-md shadow-lg" />
+      </div>
+
       <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg shadow-md">
 
         {/* Type de trajet */}
@@ -129,17 +139,34 @@ const ReservationPage: React.FC = () => {
             disabled={!selectedTrajet}
           >
             <option value="">Sélectionner</option>
-            {filteredTrajets
-              .find((trajet) => trajet.destination === selectedTrajet)
-              ?.horaires.map((horaire, index) => (
-                <option key={index} value={horaire}>
-                  {horaire}
-                </option>
-              ))}
+            {typeTrajet === "international"
+              ? horairesInternationaux.map((horaire, index) => (
+                  <option key={index} value={horaire}>
+                    {horaire}
+                  </option>
+                ))
+              : filteredTrajets
+                  .find((trajet) => trajet.destination === selectedTrajet)
+                  ?.horaires.map((horaire, index) => (
+                    <option key={index} value={horaire}>
+                      {horaire}
+                    </option>
+                  ))}
           </select>
         </div>
 
-        {/* Informations supplémentaires */}
+        {/* Nom et Prénom */}
+        <div className="mb-4">
+          <label className="block text-gray-800 font-medium mb-2">Nom et Prénom :</label>
+          <input
+            type="text"
+            value={nomPrenoms}
+            onChange={(e) => setNomPrenoms(e.target.value)}
+            className="w-full px-4 py-3 border rounded-md text-gray-700 focus:outline-none focus:ring focus:border-blue-300 transition duration-300"
+          />
+        </div>
+
+        {/* Numéro de téléphone */}
         <div className="mb-4">
           <label className="block text-gray-800 font-medium mb-2">Numéro de téléphone :</label>
           <input
@@ -171,19 +198,20 @@ const ReservationPage: React.FC = () => {
 
         {/* Affichage du prix */}
         <div className="mb-6 flex justify-center items-center">
-          <label className="text-gray-800 font-medium mr-4">Prix :</label>
-          <p className="text-xl font-semibold text-gray-800">
-            {price ? `${price} FCFA` : "Sélectionnez un trajet et un type de billet"}
-          </p>
+          {price !== null && (
+            <>
+              <label className="text-gray-800 font-medium mr-2">Prix :</label>
+              <span className="text-lg font-bold">{price} FCFA</span>
+            </>
+          )}
         </div>
 
-        {/* Bouton de réservation */}
-        <div className="flex justify-center">
+        <div className="text-center">
           <button
             type="submit"
-            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300"
+            className="w-full py-3 bg-gradient-to-r from-pink-500 to-blue-500 text-white font-semibold rounded-md shadow-md hover:from-pink-600 hover:to-blue-600 transition duration-300"
           >
-            Réserver
+            Réserver maintenant
           </button>
         </div>
       </form>
