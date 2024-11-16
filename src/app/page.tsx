@@ -21,7 +21,6 @@ const ReservationPage: React.FC = () => {
   const [message, setMessage] = useState("");
   const [price, setPrice] = useState<number | null>(null);
   const [nomPrenoms, setNomPrenoms] = useState("");
-  const [showConfirmationModal, setShowConfirmationModal] = useState(false); // Nouveau modal pour la confirmation
   const [showContactModal, setShowContactModal] = useState(false); // Modal pour contact ou dépôt
 
   // Filtrage des trajets en fonction du type sélectionné
