@@ -35,9 +35,23 @@ const ReservationPage: React.FC = () => {
     "/images/image10.jpeg",
     "/images/image11.jpeg",
     "/images/image12.jpeg",
-    "/images/image13.jpg",
-    "/images/image14.jpg",
+    "/images/image13.jpeg",
+    "/images/image14.jpeg",
   ];
+
+  const resetForm = () => {
+    setStep(0);
+    setTypeTrajet("");
+    setAllerRetour("");
+    setNumeroTel("");
+    setHoraire("");
+    setSelectedTrajet("");
+    setDate("");
+    setMessage("");
+    setNomPrenoms("");
+    setShowContactModal(false);
+  };
+  
 
   // Mise à jour du prix en fonction du trajet et du type (aller simple ou aller-retour)
 
@@ -214,15 +228,13 @@ const ReservationPage: React.FC = () => {
     <div className="p-6 max-w-lg mx-auto bg-white rounded-lg shadow-xl">
       <h1 className="text-2xl font-bold text-center mb-6">Réservation de Trajet</h1>
 
-      <div className="flex justify-center mb-6">
-        <div className="relative">
-          <img
-            src={images[currentImageIndex]}
-            alt="Carrousel Image"
-            className="w-full h-auto rounded-lg"
-          />
-          <div className="absolute top-0 left-0 right-0 bottom-0 bg-black opacity-30"></div>
-        </div>
+      <div className="relative w-full h-64 mb-6">
+        <img
+          src={images[currentImageIndex]}
+          alt="Carrousel Image"
+          className="w-full h-full object-cover rounded-lg"
+        />
+        <div className="absolute top-0 left-0 right-0 bottom-0 bg-black opacity-30"></div>
       </div>
 
       <div>
@@ -256,21 +268,22 @@ const ReservationPage: React.FC = () => {
       </div>
 
       {showContactModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-md shadow-lg max-w-lg w-full">
-            <h3 className="text-lg font-bold mb-4">Confirmation de la réservation</h3>
-            <p>Pour confirmer votre réservation, veuillez contacter le 77 00 00 00 ou effectuer un dépôt au 77 00 00 00.</p>
-            <div className="mt-4">
-              <button
-                className="px-6 py-2 bg-gray-300 rounded-md mr-4"
-                onClick={() => setShowContactModal(false)}
-              >
-                Fermer
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="bg-white p-6 rounded-md shadow-lg max-w-lg w-full">
+      <h3 className="text-lg font-bold mb-4">Confirmation de la réservation</h3>
+      <p>Pour confirmer votre réservation, veuillez contacter le 77 00 00 00 ou effectuer un dépôt au 77 00 00 00.</p>
+      <div className="mt-4">
+        <button
+          className="px-6 py-2 bg-gray-300 rounded-md mr-4"
+          onClick={resetForm}
+        >
+          Fermer
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };
